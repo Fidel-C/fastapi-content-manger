@@ -1,0 +1,11 @@
+/env
+__pycache__
+GIT_SSH_KEY
+GIT_SSH_KEY_pub
+.env 
+.venv 
+env/ 
+venv/ 
+ENV/ 
+env.bak/ 
+venv.bak/ 
