@@ -17,5 +17,5 @@ Public:
 
 Privileges: View posts (no ability to react or update)
 Also includes Oauth2 based authentication sys
-includes speed in baseenpoint(/) and (/posts/) limiting and CSRF protection
+includes speed in base endpoint(/) and get_posts endpoint (/posts/) limiting and CSRF protection
 includes unit tests for the main endpoints in auth and posts subapps
