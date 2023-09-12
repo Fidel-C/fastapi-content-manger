@@ -3,22 +3,36 @@
 COMMAND uvicorn main:app --reload
 
 The database as at now contains posts and two users
+
+
+
 Admin User:
 
 Username: admin
 Password: admin123
 Privileges: Create, View, Update, Delete, and React to posts
+
+
+
 Ordinary User:
 
 Username: johndoe
 Password: test123
 Privileges: View and React to posts
+
+
+
+
 Public:
 
-Privileges: View posts (no ability to react or update)
-Also includes Oauth2 based authentication sys
-includes speed in base endpoint(/) and get_posts endpoint (/posts/) limiting and CSRF protection
-includes unit tests for the main endpoints in auth and posts subapps
+Privileges: View posts (no ability to react to or update posts)
+
+
+Also includes Oauth2 based authentication 
+
+Includes Requets Throtting to a maximum of 10 requests per minute in base endpoint(/) and get_posts endpoint (/posts/) limiting and CSRF protection
+Includes unit tests for the main endpoints in auth and posts subapps
+Includes CSRF protection
 
 
 content-app/
@@ -53,6 +67,7 @@ content-app/
 │   └── rate_limiter.py (Utility for rate limiting)
 │
 └── requirements.txt (List of project dependencies)
+
 
 
 Descriptions:
