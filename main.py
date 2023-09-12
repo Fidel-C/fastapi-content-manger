@@ -1,15 +1,16 @@
+import asyncio
 from tortoise.contrib.fastapi import register_tortoise
 from auth.models import User
 
-from fastapi import FastAPI
-from tortoise import Tortoise
+from fastapi import FastAPI,Request,testclient,status
+from tortoise import Tortoise, run_async
 from posts.crud import router as posts_router
 from auth.crud import router as auth_router
 from auth.crud import hash_pass
-import sys
+import sys,pytest
 from fastapi.middleware.cors import CORSMiddleware
 import settings   
-
+from utils.rate_limiter import rate_limit
 
 
       
@@ -17,6 +18,8 @@ import settings
 
 
 app=FastAPI(description='Content Management App',title='Content API', version='1.0')
+
+
 
 
   
@@ -32,12 +35,24 @@ Tortoise.init_models(['auth.models','posts.models'],'models')
 
 
 
+#implementation of rate limiting
+
 @app.get('/', description='Index')
-async def index():
+@rate_limit(max_calls=10,time_frame=60)
+async def index(req:Request):
+    
     return {'content':'app'}
+
+    
+    
+    
+    
+         
  
 app.include_router(auth_router,prefix='/auth',tags=['Auth'])
 app.include_router(posts_router,prefix='/posts',tags=['Posts'])
+
+
 
 
 
@@ -66,7 +81,3 @@ app.add_middleware(
 
 
        
-@app.on_event("shutdown")
-async def shutdown_event():
-    await Tortoise.close_connections()
-    

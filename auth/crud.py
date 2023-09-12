@@ -12,7 +12,6 @@ import settings
 from datetime import datetime
 
 
-
 router=APIRouter()
 
 
@@ -23,12 +22,7 @@ router=APIRouter()
 auth_scheme=OAuth2PasswordBearer(tokenUrl='auth/login')
 
 
- 
-@router.get('/users',response_model=list[UserOut])
-async def get_users():
-    return await User.all()
-
-
+        
 
 @router.post('/register',status_code=status.HTTP_201_CREATED,response_model=UserOut)
 async def register(form:RegisterSchema):
@@ -97,6 +91,12 @@ async def get_active_user(user:UserOut|bool=Depends(get_current_user)):
 
         
 
+ 
+@router.get('/users',response_model=list[UserOut])
+async def get_users(isAdmin:bool|UserOut=Depends(check_is_admin_user)):
+    if isAdmin==False:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='You are not authorised to perform this action')
+    return await User.all()
     
     
         

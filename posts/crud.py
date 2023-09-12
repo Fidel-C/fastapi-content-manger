@@ -5,7 +5,9 @@ from fastapi import Depends,HTTPException,status
 from auth.models import User
 from auth.schemas import UserOut
 from fastapi.responses import JSONResponse
+from fastapi import Request
 
+from utils.rate_limiter import rate_limit
 
 from .models import Post
 from .schemas import CreatePostSchema, PostOutSchema, ReactEnum, UpdatePostSchema
@@ -15,7 +17,7 @@ router=APIRouter()
 
 
 @router.post('/',status_code=201,response_model=PostOutSchema, description='Admin Only')
-async def create_post(payload:CreatePostSchema, isAdmin:bool|UserOut=Depends(check_is_admin_user)):
+async def create_post( payload:CreatePostSchema, isAdmin:bool|UserOut=Depends(check_is_admin_user)):
     if isAdmin==False:
         raise HTTPException(detail='You are unthorised to perform this action',status_code=status.HTTP_401_UNAUTHORIZED)
     try:
@@ -27,7 +29,8 @@ async def create_post(payload:CreatePostSchema, isAdmin:bool|UserOut=Depends(che
    
 
 @router.get('/', response_model=list[PostOutSchema],description='Publicly accessible')
-async def get_posts():
+@rate_limit(max_calls=10,time_frame=60)
+async def get_posts(req:Request,):
     return await Post.filter(un_publish=False)
 
     
